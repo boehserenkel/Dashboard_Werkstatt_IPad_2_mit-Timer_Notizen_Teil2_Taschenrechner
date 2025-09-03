@@ -47,6 +47,8 @@
     color: red;
     font-family: monospace;
   }
+
+  /* Kalender-Styles */
   .calendar {
     width: 320px;
     margin: 10px auto 20px auto;
@@ -57,23 +59,44 @@
     white-space: pre;
     line-height: 1.4;
     box-sizing: border-box;
+    user-select: none;
   }
-  #notesContainer {
-    width: 280px;
-    margin: 20px auto 30px auto;
+  mark {
+    background-color: #ff4444;
+    color: white;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 3px;
+  }
+
+  /* Flex Container für Notizen + Rechner */
+  #notesCalculatorContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px auto 40px auto;
+    max-width: 700px;
+  }
+
+  #notesContainer, #calculator {
+    flex: 1 1 45%;
+    min-width: 280px;
     background: rgba(255,255,255,0.85);
-    padding: 10px 8px;
+    padding: 10px 12px;
     border-radius: 10px;
-    font-family: monospace;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    text-align: left;
     box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    font-family: monospace;
+    text-align: left;
   }
+
   #notesContainer h2 {
     margin-top: 0;
     color: #333;
     font-size: 1.1em;
   }
+
   #notes {
     width: 100%;
     height: 120px;
@@ -85,6 +108,7 @@
     resize: vertical;
     box-sizing: border-box;
   }
+
   #saveNotesBtn {
     margin-top: 10px;
     padding: 8px 16px;
@@ -95,19 +119,12 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
   #saveNotesBtn:hover {
     background-color: #0b7dda;
   }
-  /* Taschenrechner-Stile */
-  #calculator {
-    width: 280px;
-    margin: 20px auto 40px auto;
-    background: rgba(255,255,255,0.85);
-    padding: 10px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  }
+
+  /* Taschenrechner */
   #calcDisplay {
     width: 100%;
     height: 40px;
@@ -120,6 +137,7 @@
     box-sizing: border-box;
     font-family: monospace;
   }
+
   #calcButtons button {
     width: 22%;
     margin: 1%;
@@ -131,15 +149,28 @@
     background-color: #eee;
     transition: background-color 0.2s ease;
   }
+
   #calcButtons button.operator {
     background-color: #f90;
     color: white;
   }
+
   #calcButtons button:hover {
     background-color: #ddd;
   }
+
   #calcButtons button.operator:hover {
     background-color: #e68a00;
+  }
+
+  #calcButtons button.equals {
+    width: 94%;
+    background-color: #2196F3;
+    color: white;
+  }
+
+  #calcButtons button.equals:hover {
+    background-color: #0b7dda;
   }
 </style>
 </head>
@@ -159,38 +190,39 @@
 
 <div class="calendar" id="calendarDisplay"></div>
 
-<div id="notesContainer">
-  <h2>Notizen</h2>
-  <textarea id="notes" placeholder="Hier deine Notizen eingeben..."></textarea>
-  <br />
-  <button id="saveNotesBtn">Notizen speichern</button>
-</div>
+<div id="notesCalculatorContainer">
+  <div id="notesContainer">
+    <h2>Notizen</h2>
+    <textarea id="notes" placeholder="Hier deine Notizen eingeben..."></textarea>
+    <br />
+    <button id="saveNotesBtn">Notizen speichern</button>
+  </div>
 
-<!-- Taschenrechner -->
-<div id="calculator">
-  <input type="text" id="calcDisplay" readonly />
-  <div id="calcButtons">
-    <button onclick="calcPress('7')">7</button>
-    <button onclick="calcPress('8')">8</button>
-    <button onclick="calcPress('9')">9</button>
-    <button class="operator" onclick="calcPress('/')">÷</button>
+  <div id="calculator">
+    <input type="text" id="calcDisplay" readonly />
+    <div id="calcButtons">
+      <button onclick="calcPress('7')">7</button>
+      <button onclick="calcPress('8')">8</button>
+      <button onclick="calcPress('9')">9</button>
+      <button class="operator" onclick="calcPress('/')">÷</button>
 
-    <button onclick="calcPress('4')">4</button>
-    <button onclick="calcPress('5')">5</button>
-    <button onclick="calcPress('6')">6</button>
-    <button class="operator" onclick="calcPress('*')">×</button>
+      <button onclick="calcPress('4')">4</button>
+      <button onclick="calcPress('5')">5</button>
+      <button onclick="calcPress('6')">6</button>
+      <button class="operator" onclick="calcPress('*')">×</button>
 
-    <button onclick="calcPress('1')">1</button>
-    <button onclick="calcPress('2')">2</button>
-    <button onclick="calcPress('3')">3</button>
-    <button class="operator" onclick="calcPress('-')">−</button>
+      <button onclick="calcPress('1')">1</button>
+      <button onclick="calcPress('2')">2</button>
+      <button onclick="calcPress('3')">3</button>
+      <button class="operator" onclick="calcPress('-')">−</button>
 
-    <button onclick="calcPress('0')">0</button>
-    <button onclick="calcPress('.')">.</button>
-    <button onclick="calcClear()">C</button>
-    <button class="operator" onclick="calcPress('+')">+</button>
+      <button onclick="calcPress('0')">0</button>
+      <button onclick="calcPress('.')">.</button>
+      <button onclick="calcClear()">C</button>
+      <button class="operator" onclick="calcPress('+')">+</button>
 
-    <button style="width: 94%;" onclick="calcCalculate()">=</button>
+      <button class="equals" onclick="calcCalculate()">=</button>
+    </div>
   </div>
 </div>
 
@@ -308,7 +340,7 @@
     return time < 10 ? '0' + time : time;
   }
 
-  // Kalender (Textbasiert, ohne HTML-Spans)
+  // Kalender Rendering mit Wochentagen und rotem Markup für aktuellen Tag
   function renderCalendar() {
     var calendar = document.getElementById('calendarDisplay');
     var now = new Date();
@@ -327,22 +359,27 @@
     // Verschiebung Sonntag=0 zu Montag=0
     var dayOffset = (startWeekday === 0) ? 6 : startWeekday - 1;
 
+    // Leerfelder bis zum ersten Tag (Mo ausrichten)
     for (var i = 0; i < dayOffset; i++) {
       week.push('  ');
     }
 
     for (var d = 1; d <= daysInMonth; d++) {
       var dayStr = d < 10 ? ' ' + d : d.toString();
+
       if (d === today) {
-        // Aktuellen Tag markieren mit eckigen Klammern
-        dayStr = '[' + (d < 10 ? ' ' + d : d) + ']';
+        // Aktuellen Tag rot hinterlegen mit mark-Tag
+        dayStr = '<mark>' + (d < 10 ? ' ' + d : d) + '</mark>';
       }
       week.push(dayStr);
+
       if (week.length === 7) {
         weeks.push(week);
         week = [];
       }
     }
+
+    // Restliche Tage in der letzten Woche mit Leerfeldern auffüllen
     if (week.length > 0) {
       while (week.length < 7) {
         week.push('  ');
@@ -350,69 +387,53 @@
       weeks.push(week);
     }
 
-    var calendarText = weekHeader.join(' ') + '\n';
+    // Kalender als HTML-Text bauen (mit Zeilenumbruch <br>)
+    var calendarHTML = weekHeader.join(' ') + '<br>';
     weeks.forEach(function(w) {
-      calendarText += w.join(' ') + '\n';
+      calendarHTML += w.join(' ') + '<br>';
     });
 
-    calendar.textContent = calendarText;
+    calendar.innerHTML = calendarHTML;
   }
 
   renderCalendar();
   setInterval(renderCalendar, 60000);
 
-  // Notizen Speicher-Logik
+  // Notizen speichern
   var notesTextarea = document.getElementById('notes');
-  var saveBtn = document.getElementById('saveNotesBtn');
+  var saveNotesBtn = document.getElementById('saveNotesBtn');
 
-  function loadNotes() {
-    var savedNotes = localStorage.getItem('dashboardNotes');
-    if (savedNotes) {
-      notesTextarea.value = savedNotes;
+  // Lade gespeicherte Notizen aus localStorage
+  window.onload = function() {
+    if (localStorage.getItem('myNotes')) {
+      notesTextarea.value = localStorage.getItem('myNotes');
     }
-  }
+  };
 
-  saveBtn.addEventListener('click', function() {
-    localStorage.setItem('dashboardNotes', notesTextarea.value);
-    alert('Notizen gespeichert!');
+  saveNotesBtn.addEventListener('click', function() {
+    localStorage.setItem('myNotes', notesTextarea.value);
+    alert("Notizen gespeichert!");
   });
 
-  loadNotes();
-
-  // Taschenrechner Logik
+  // Taschenrechner Funktionen
   var calcDisplay = document.getElementById('calcDisplay');
-  var calcExpression = '';
 
-  window.calcPress = function(value) {
-    // Verhindert zwei Operatoren hintereinander
-    if ('+-*/'.includes(value)) {
-      if (calcExpression === '' || '+-*/'.includes(calcExpression.slice(-1))) {
-        return;
-      }
-    }
-    calcExpression += value;
-    calcDisplay.value = calcExpression;
+  window.calcPress = function(val) {
+    calcDisplay.value += val;
   };
 
   window.calcClear = function() {
-    calcExpression = '';
     calcDisplay.value = '';
   };
 
   window.calcCalculate = function() {
-    if (calcExpression === '') return;
-    // Ersetze Multiplizieren/Dividieren Symbole (nur optisch, die Expression benutzt * /)
     try {
-      // eval ist hier sicher, da Eingabe nur über Buttons
-      var result = eval(calcExpression);
+      var result = eval(calcDisplay.value);
       calcDisplay.value = result;
-      calcExpression = result.toString();
-    } catch(e) {
+    } catch (e) {
       calcDisplay.value = 'Fehler';
-      calcExpression = '';
     }
   };
-
 })();
 </script>
 
