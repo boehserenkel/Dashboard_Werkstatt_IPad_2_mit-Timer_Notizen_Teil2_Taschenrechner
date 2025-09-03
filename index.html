@@ -98,46 +98,48 @@
   #saveNotesBtn:hover {
     background-color: #0b7dda;
   }
-
-  /* === Taschenrechner Styles === */
-  #calculatorContainer {
+  /* Taschenrechner-Stile */
+  #calculator {
     width: 280px;
-    margin: 20px auto 30px auto;
+    margin: 20px auto 40px auto;
     background: rgba(255,255,255,0.85);
-    padding: 10px 8px;
+    padding: 10px;
     border-radius: 10px;
-    font-family: monospace;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
     box-sizing: border-box;
-  }
-  #calculatorContainer h2 {
-    margin-top: 0;
-    font-size: 1.1em;
-    color: #333;
-    text-align: left;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
   }
   #calcDisplay {
     width: 100%;
     height: 40px;
     font-size: 1.5em;
-    margin-bottom: 10px;
     text-align: right;
-    padding: 5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
     box-sizing: border-box;
+    font-family: monospace;
   }
   #calcButtons button {
-    width: 60px;
-    height: 40px;
-    font-size: 1.2em;
-    margin: 4px 2px;
+    width: 22%;
+    margin: 1%;
+    font-size: 1.3em;
+    padding: 10px 0;
     border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
+    border-radius: 6px;
     cursor: pointer;
+    background-color: #eee;
+    transition: background-color 0.2s ease;
+  }
+  #calcButtons button.operator {
+    background-color: #f90;
+    color: white;
   }
   #calcButtons button:hover {
-    background-color: #45a049;
+    background-color: #ddd;
+  }
+  #calcButtons button.operator:hover {
+    background-color: #e68a00;
   }
 </style>
 </head>
@@ -164,62 +166,252 @@
   <button id="saveNotesBtn">Notizen speichern</button>
 </div>
 
-<!-- === Taschenrechner === -->
-<div id="calculatorContainer">
-  <h2>Taschenrechner</h2>
+<!-- Taschenrechner -->
+<div id="calculator">
   <input type="text" id="calcDisplay" readonly />
   <div id="calcButtons">
-    <button onclick="appendCalc('7')">7</button>
-    <button onclick="appendCalc('8')">8</button>
-    <button onclick="appendCalc('9')">9</button>
-    <button onclick="appendCalc('/')">÷</button><br />
+    <button onclick="calcPress('7')">7</button>
+    <button onclick="calcPress('8')">8</button>
+    <button onclick="calcPress('9')">9</button>
+    <button class="operator" onclick="calcPress('/')">÷</button>
 
-    <button onclick="appendCalc('4')">4</button>
-    <button onclick="appendCalc('5')">5</button>
-    <button onclick="appendCalc('6')">6</button>
-    <button onclick="appendCalc('*')">×</button><br />
+    <button onclick="calcPress('4')">4</button>
+    <button onclick="calcPress('5')">5</button>
+    <button onclick="calcPress('6')">6</button>
+    <button class="operator" onclick="calcPress('*')">×</button>
 
-    <button onclick="appendCalc('1')">1</button>
-    <button onclick="appendCalc('2')">2</button>
-    <button onclick="appendCalc('3')">3</button>
-    <button onclick="appendCalc('-')">−</button><br />
+    <button onclick="calcPress('1')">1</button>
+    <button onclick="calcPress('2')">2</button>
+    <button onclick="calcPress('3')">3</button>
+    <button class="operator" onclick="calcPress('-')">−</button>
 
-    <button onclick="appendCalc('0')">0</button>
-    <button onclick="appendCalc('.')">.</button>
-    <button onclick="clearCalc()">C</button>
-    <button onclick="appendCalc('+')">+</button><br />
+    <button onclick="calcPress('0')">0</button>
+    <button onclick="calcPress('.')">.</button>
+    <button onclick="calcClear()">C</button>
+    <button class="operator" onclick="calcPress('+')">+</button>
 
-    <button onclick="calculateResult()" style="width: 100%">=</button>
+    <button style="width: 94%;" onclick="calcCalculate()">=</button>
   </div>
 </div>
 
 <script>
 (function() {
-  // ... (Dein bestehender Code bleibt unverändert, wie oben) ...
+  var canvas = document.getElementById('clockCanvas');
+  var ctx = canvas.getContext('2d');
+  var radius = canvas.height / 2;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
 
-  // Notizen-Funktion etc. hier ... (alles wie gehabt)
+  function drawClock() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // === Taschenrechner ===
-  let calcDisplay = '';
-  function appendCalc(value) {
-    calcDisplay += value;
-    document.getElementById('calcDisplay').value = calcDisplay;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius * 0.9, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#333';
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+
+    drawNumbers();
+    drawHands();
   }
-  function clearCalc() {
-    calcDisplay = '';
-    document.getElementById('calcDisplay').value = '';
-  }
-  function calculateResult() {
-    try {
-      calcDisplay = eval(calcDisplay).toString();
-      document.getElementById('calcDisplay').value = calcDisplay;
-    } catch (e) {
-      document.getElementById('calcDisplay').value = 'Fehler';
-      calcDisplay = '';
+
+  function drawNumbers() {
+    ctx.font = radius * 0.12 + "px Arial";
+    ctx.fillStyle = '#000';
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+
+    for (var num = 1; num <= 12; num++) {
+      var ang = num * Math.PI / 6;
+      var x = centerX + Math.cos(ang - Math.PI/2) * radius * 0.75;
+      var y = centerY + Math.sin(ang - Math.PI/2) * radius * 0.75;
+      ctx.fillText(num.toString(), x, y);
     }
   }
 
-  // (Rest deines bestehenden JavaScript-Codes bleibt bestehen)
+  function drawHands() {
+    var now = new Date();
+    var hour = now.getHours() % 12;
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+
+    var hourAngle = ((hour + minute / 60) * Math.PI / 6) - Math.PI/2;
+    drawHand(hourAngle, radius * 0.5, 8);
+
+    var minuteAngle = (minute * Math.PI / 30) - Math.PI/2;
+    drawHand(minuteAngle, radius * 0.7, 6);
+
+    var secondAngle = (second * Math.PI / 30) - Math.PI/2;
+    drawHand(secondAngle, radius * 0.85, 2, 'red');
+
+    var digital = document.getElementById('digitalClock');
+    digital.textContent =
+      (now.getHours() < 10 ? '0' + now.getHours() : now.getHours()) + ':' +
+      (minute < 10 ? '0' + minute : minute) + ':' +
+      (second < 10 ? '0' + second : second);
+  }
+
+  function drawHand(angle, length, width, color) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = color || '#000';
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX + length * Math.cos(angle), centerY + length * Math.sin(angle));
+    ctx.stroke();
+  }
+
+  setInterval(drawClock, 1000);
+  drawClock();
+
+  var countdown;
+  var isTimerRunning = false;
+
+  window.startTimer = function(minutes) {
+    if (isTimerRunning) {
+      clearInterval(countdown);
+      isTimerRunning = false;
+      document.getElementById('timer').innerText = '00:00';
+    }
+
+    var totalSeconds = minutes * 60;
+    isTimerRunning = true;
+    updateTimerDisplay(totalSeconds);
+
+    countdown = setInterval(function () {
+      totalSeconds--;
+      updateTimerDisplay(totalSeconds);
+
+      if (totalSeconds <= 0) {
+        clearInterval(countdown);
+        isTimerRunning = false;
+        alert("Zeit ist um!");
+        document.getElementById('timer').innerText = '00:00';
+      }
+    }, 1000);
+  };
+
+  function updateTimerDisplay(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    document.getElementById('timer').innerText = padTime(minutes) + ":" + padTime(remainingSeconds);
+  }
+
+  function padTime(time) {
+    return time < 10 ? '0' + time : time;
+  }
+
+  // Kalender (Textbasiert, ohne HTML-Spans)
+  function renderCalendar() {
+    var calendar = document.getElementById('calendarDisplay');
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var today = now.getDate();
+
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+    var daysInMonth = lastDay.getDate();
+    var startWeekday = firstDay.getDay(); // 0=Sonntag
+
+    var weekHeader = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+    var weeks = [], week = [];
+
+    // Verschiebung Sonntag=0 zu Montag=0
+    var dayOffset = (startWeekday === 0) ? 6 : startWeekday - 1;
+
+    for (var i = 0; i < dayOffset; i++) {
+      week.push('  ');
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dayStr = d < 10 ? ' ' + d : d.toString();
+      if (d === today) {
+        // Aktuellen Tag markieren mit eckigen Klammern
+        dayStr = '[' + (d < 10 ? ' ' + d : d) + ']';
+      }
+      week.push(dayStr);
+      if (week.length === 7) {
+        weeks.push(week);
+        week = [];
+      }
+    }
+    if (week.length > 0) {
+      while (week.length < 7) {
+        week.push('  ');
+      }
+      weeks.push(week);
+    }
+
+    var calendarText = weekHeader.join(' ') + '\n';
+    weeks.forEach(function(w) {
+      calendarText += w.join(' ') + '\n';
+    });
+
+    calendar.textContent = calendarText;
+  }
+
+  renderCalendar();
+  setInterval(renderCalendar, 60000);
+
+  // Notizen Speicher-Logik
+  var notesTextarea = document.getElementById('notes');
+  var saveBtn = document.getElementById('saveNotesBtn');
+
+  function loadNotes() {
+    var savedNotes = localStorage.getItem('dashboardNotes');
+    if (savedNotes) {
+      notesTextarea.value = savedNotes;
+    }
+  }
+
+  saveBtn.addEventListener('click', function() {
+    localStorage.setItem('dashboardNotes', notesTextarea.value);
+    alert('Notizen gespeichert!');
+  });
+
+  loadNotes();
+
+  // Taschenrechner Logik
+  var calcDisplay = document.getElementById('calcDisplay');
+  var calcExpression = '';
+
+  window.calcPress = function(value) {
+    // Verhindert zwei Operatoren hintereinander
+    if ('+-*/'.includes(value)) {
+      if (calcExpression === '' || '+-*/'.includes(calcExpression.slice(-1))) {
+        return;
+      }
+    }
+    calcExpression += value;
+    calcDisplay.value = calcExpression;
+  };
+
+  window.calcClear = function() {
+    calcExpression = '';
+    calcDisplay.value = '';
+  };
+
+  window.calcCalculate = function() {
+    if (calcExpression === '') return;
+    // Ersetze Multiplizieren/Dividieren Symbole (nur optisch, die Expression benutzt * /)
+    try {
+      // eval ist hier sicher, da Eingabe nur über Buttons
+      var result = eval(calcExpression);
+      calcDisplay.value = result;
+      calcExpression = result.toString();
+    } catch(e) {
+      calcDisplay.value = 'Fehler';
+      calcExpression = '';
+    }
+  };
 
 })();
 </script>
