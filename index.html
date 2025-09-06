@@ -1,255 +1,486 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard für iPad 2</title>
+<meta charset="UTF-8" />
+<title>Dashboard iPad 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+    text-align: center;
+    background: url('Werkstatt.jpg') no-repeat center center fixed;
+    background-size: cover;
+  }
 
-  <!-- iPad 2 Web-App Einstellungen -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="apple-mobile-web-app-title" content="Dashboard" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  #digitalClock {
+    font-size: 2.5em;
+    font-family: monospace;
+    color: red;
+    margin: 15px 0 0 0;
+    text-shadow: 0 0 10px red;
+  }
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: sans-serif;
-      background: url('Werkstatt.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #222;
-      text-align: center;
-    }
+  canvas {
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 280px;
+    height: 280px;
+    display: block;
+    margin: 15px auto 30px auto;
+  }
 
-    canvas {
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      width: 400px;
-      height: 400px;
-      margin-top: 10px;
-      max-width: 90vw;
-      max-height: 90vw;
-    }
+  .timer-btns button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
-    #digitalClock {
-      font-size: 2em;
-      font-family: monospace;
-      margin: 10px 0;
-    }
+  #timer {
+    font-size: 1.8em;
+    margin-top: 10px;
+    color: red;
+    font-family: monospace;
+  }
 
-    .section {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.6);
-      border-radius: 10px;
-      display: inline-block;
-      max-width: 95vw;
-    }
+  .calendar {
+    width: 320px;
+    margin: 10px auto 20px auto;
+    background: rgba(255,255,255,0.85);
+    padding: 12px 8px;
+    border-radius: 10px;
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1.4;
+    box-sizing: border-box;
+    user-select: none;
+  }
 
-    .calendar {
-      font-family: monospace;
-      white-space: pre;
-      font-size: 1.5em;
-    }
+  mark {
+    background-color: #ff4444;
+    color: white;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 3px;
+  }
 
-    .infos {
-      margin-top: 20px;
-      font-size: 1.2em;
-    }
+  #notesCalculatorContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px auto 40px auto;
+    max-width: 700px;
+  }
 
-    strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-  </style>
+  #notesContainer, #calculator {
+    flex: 1 1 40%;
+    min-width: 240px;
+    background: rgba(40, 40, 40, 0.85);
+    padding: 8px 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    font-family: monospace;
+    text-align: left;
+    color: #f1f1f1;
+    font-size: 0.9em;
+  }
+
+  #notesContainer h2 {
+    margin-top: 0;
+    color: #f1f1f1;
+    font-size: 1.1em;
+  }
+
+  #notes {
+    width: 100%;
+    height: 90px;
+    font-family: monospace;
+    font-size: 13px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    resize: vertical;
+    box-sizing: border-box;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+  }
+
+  #saveNotesBtn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 13px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #saveNotesBtn:hover {
+    background-color: #0b7dda;
+  }
+
+  #calcDisplay {
+    width: 100%;
+    height: 35px;
+    font-size: 1.2em;
+    text-align: right;
+    padding: 4px 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    box-sizing: border-box;
+    font-family: monospace;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+  }
+
+  #calcButtons button {
+    width: 21%;
+    margin: 1%;
+    font-size: 1.1em;
+    padding: 8px 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #eee;
+    transition: background-color 0.2s ease;
+  }
+
+  #calcButtons button.operator {
+    background-color: #f90;
+    color: white;
+  }
+
+  #calcButtons button:hover {
+    background-color: #ddd;
+  }
+
+  #calcButtons button.operator:hover {
+    background-color: #e68a00;
+  }
+
+  #calcButtons button.equals {
+    width: 92%;
+    background-color: #2196F3;
+    color: white;
+  }
+
+  #calcButtons button.equals:hover {
+    background-color: #0b7dda;
+  }
+</style>
 </head>
 <body>
 
-  <!-- ANALOGE + DIGITALE UHR -->
-  <canvas id="clockCanvas" width="500" height="500"></canvas>
-  <div id="digitalClock">--:--:--</div>
+<div id="digitalClock">--:--:--</div>
+<canvas id="clockCanvas" width="280" height="280"></canvas>
 
-  <!-- KALENDER -->
-  <div class="section calendar">
-    <div id="dateToday"></div>
-    <div id="calendarOutput"></div>
+<div class="timer-btns">
+  <button onclick="startTimer(1)">1 Minute</button>
+  <button onclick="startTimer(2)">2 Minuten</button>
+  <button onclick="startTimer(5)">5 Minuten</button>
+  <button onclick="startTimer(10)">10 Minuten</button>
+  <button onclick="startTimer(15)">15 Minuten</button>
+</div>
+<div id="timer">00:00</div>
+
+<div class="calendar" id="calendarDisplay"></div>
+
+<div id="notesCalculatorContainer">
+  <div id="notesContainer">
+    <h2>Notizen</h2>
+    <textarea id="notes" placeholder="Hier deine Notizen eingeben..."></textarea>
+    <br />
+    <button id="saveNotesBtn">Notizen speichern</button>
   </div>
 
-  <!-- INFOS -->
-  <div class="section infos">
-    <strong>Infos:</strong>
-    Sieger stehen da auf, wo Verlierer liegen bleiben<br />
-    Hallo Tom & Paul<br />
+  <div id="calculator">
+    <input type="text" id="calcDisplay" readonly />
+    <div id="calcButtons">
+      <button onclick="calcPress('7')">7</button>
+      <button onclick="calcPress('8')">8</button>
+      <button onclick="calcPress('9')">9</button>
+      <button class="operator" onclick="calcPress('/')">÷</button>
+
+      <button onclick="calcPress('4')">4</button>
+      <button onclick="calcPress('5')">5</button>
+      <button onclick="calcPress('6')">6</button>
+      <button class="operator" onclick="calcPress('*')">×</button>
+
+      <button onclick="calcPress('1')">1</button>
+      <button onclick="calcPress('2')">2</button>
+      <button onclick="calcPress('3')">3</button>
+      <button class="operator" onclick="calcPress('-')">−</button>
+
+      <button onclick="calcPress('0')">0</button>
+      <button onclick="calcPress('.')">.</button>
+      <button onclick="calcClear()">C</button>
+      <button class="operator" onclick="calcPress('+')">+</button>
+
+      <button class="equals" onclick="calcCalculate()">=</button>
+    </div>
   </div>
+</div>
 
-  <script>
-    // ANALOG + DIGITAL UHR
-    (function(){
-      var canvas = document.getElementById("clockCanvas");
-      var ctx = canvas.getContext("2d");
-      if (!ctx) return;
+<script>
+// UHR, TIMER, KALENDER, NOTIZEN, RECHNER
+(function() {
+  var canvas = document.getElementById('clockCanvas');
+  var ctx = canvas.getContext('2d');
+  var radius = canvas.height / 2;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
 
-      var radius = canvas.height / 2;
-      ctx.translate(radius, radius);
-      radius = radius * 0.90;
+  function drawClock() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius * 0.9, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#333';
+    ctx.stroke();
 
-      function drawClock() {
-        drawFace(ctx, radius);
-        drawNumbers(ctx, radius);
-        drawTime(ctx, radius);
-      }
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = '#333';
+    ctx.fill();
 
-      function drawFace(ctx, radius) {
-        ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = radius * 0.05;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(0, 0, radius * 0.05, 0, 2 * Math.PI);
-        ctx.fillStyle = '#333';
-        ctx.fill();
-      }
+    drawNumbers();
+    drawHands();
+  }
 
-      function drawNumbers(ctx, radius) {
-        var ang, num;
-        ctx.font = radius * 0.18 + "px Arial";
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        for (num = 1; num <= 12; num++) {
-          ang = num * Math.PI / 6;
-          ctx.rotate(ang);
-          ctx.translate(0, -radius * 0.85);
-          ctx.rotate(-ang);
-          ctx.fillText(num.toString(), 0, 0);
-          ctx.rotate(ang);
-          ctx.translate(0, radius * 0.85);
-          ctx.rotate(-ang);
-        }
-      }
+  function drawNumbers() {
+    ctx.font = radius * 0.12 + "px Arial";
+    ctx.fillStyle = '#000';
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
 
-      function drawHand(ctx, pos, length, width, color) {
-        ctx.beginPath();
-        ctx.lineWidth = width;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = color || "#000";
-        ctx.moveTo(0, 0);
-        ctx.rotate(pos);
-        ctx.lineTo(0, -length);
-        ctx.stroke();
-        ctx.rotate(-pos);
-      }
+    for (var num = 1; num <= 12; num++) {
+      var ang = num * Math.PI / 6;
+      var x = centerX + Math.cos(ang - Math.PI/2) * radius * 0.75;
+      var y = centerY + Math.sin(ang - Math.PI/2) * radius * 0.75;
+      ctx.fillText(num.toString(), x, y);
+    }
+  }
 
-      function drawTime(ctx, radius) {
-        var now = new Date();
-        var hour = now.getHours();
-        var minute = now.getMinutes();
-        var second = now.getSeconds();
+  function drawHands() {
+    var now = new Date();
+    var hour = now.getHours() % 12;
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
 
-        var digital = document.getElementById("digitalClock");
-        digital.textContent =
-          (hour < 10 ? "0" + hour : hour) + ":" +
-          (minute < 10 ? "0" + minute : minute) + ":" +
-          (second < 10 ? "0" + second : second);
+    drawHand(((hour + minute / 60) * Math.PI / 6) - Math.PI/2, radius * 0.5, 8);
+    drawHand((minute * Math.PI / 30) - Math.PI/2, radius * 0.7, 6);
+    drawHand((second * Math.PI / 30) - Math.PI/2, radius * 0.85, 2, 'red');
 
-        hour = hour % 12;
-        hour = (hour * Math.PI / 6) +
-               (minute * Math.PI / (6 * 60)) +
-               (second * Math.PI / (360 * 60));
-        drawHand(ctx, hour, radius * 0.5, radius * 0.09);
+    document.getElementById('digitalClock').textContent =
+      (now.getHours()<10?'0':'') + now.getHours() + ':' +
+      (minute<10?'0':'') + minute + ':' +
+      (second<10?'0':'') + second;
+  }
 
-        minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-        drawHand(ctx, minute, radius * 0.75, radius * 0.09);
+  function drawHand(angle, length, width, color) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = color || '#000';
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX + length * Math.cos(angle), centerY + length * Math.sin(angle));
+    ctx.stroke();
+  }
 
-        second = second * Math.PI / 30;
-        drawHand(ctx, second, radius * 0.85, radius * 0.03, "red");
-      }
+  setInterval(drawClock, 1000);
+  drawClock();
 
-      setInterval(function() {
-        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
-        drawClock();
-      }, 1000);
-    })();
+  var countdown;
+  var isTimerRunning = false;
 
-    // KALENDER MIT KW & HEUTE in ROT
-    (function(){
-      var now = new Date();
-      var today = now.getDate();
-      var todayMonth = now.getMonth();
-      var todayYear = now.getFullYear();
+  window.startTimer = function(minutes) {
+    if (isTimerRunning) {
+      clearInterval(countdown);
+      isTimerRunning = false;
+      document.getElementById('timer').innerText = '00:00';
+    }
 
-      var dayNames = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-      var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                        "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    var totalSeconds = minutes * 60;
+    isTimerRunning = true;
+    updateTimerDisplay(totalSeconds);
 
-      var month = todayMonth;
-      var year = todayYear;
+    countdown = setInterval(function () {
+      totalSeconds--;
+      updateTimerDisplay(totalSeconds);
 
-      document.getElementById("dateToday").textContent =
-        "Heute ist " + dayNames[(now.getDay() + 6) % 7] + ", " + today + ". " + monthNames[month] + " " + year;
-
-      function getISOWeek(d) {
-        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-        var dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      }
-
-      var firstDay = new Date(year, month, 1);
-      var lastDay = new Date(year, month + 1, 0);
-      var daysInMonth = lastDay.getDate();
-
-      var output = "<pre>     " + monthNames[month] + " " + year + "\nKW  " + dayNames.join(" ") + "\n";
-
-      var weekDay = (firstDay.getDay() + 6) % 7;
-      var currentWeekStart = new Date(year, month, 1 - weekDay);
-
-      for (var w = 0; w < 6; w++) {
-        var weekDate = new Date(currentWeekStart);
-        weekDate.setDate(currentWeekStart.getDate() + w * 7);
-        var kw = getISOWeek(weekDate);
-        var line = (kw < 10 ? "0" + kw : kw) + " ";
-
-        for (var i = 0; i < 7; i++) {
-          var dayDate = new Date(weekDate);
-          dayDate.setDate(weekDate.getDate() + i);
-          var dayNum = dayDate.getDate();
-          var inMonth = dayDate.getMonth() === month;
-
-          if (inMonth) {
-            var isToday = (dayNum === today && dayDate.getMonth() === todayMonth && dayDate.getFullYear() === todayYear);
-            if (isToday) {
-              line += "<span style='color:red;font-weight:bold'>" + (dayNum < 10 ? " " + dayNum : dayNum) + "</span> ";
-            } else {
-              line += (dayNum < 10 ? " " + dayNum : dayNum) + " ";
-            }
-          } else {
-            line += "   ";
-          }
-        }
-
-        if (weekDate.getMonth() > month || (weekDate.getMonth() === month && weekDate.getDate() > daysInMonth)) break;
-        output += line + "\n";
-      }
-
-      output += "</pre>";
-      document.getElementById("calendarOutput").innerHTML = output;
-    })();
-
-    // OPTIONAL: Automatisch täglich neu laden (wenn Seite dauerhaft offen)
-    setInterval(function() {
-      var now = new Date();
-      if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 5) {
-        location.reload();
+      if (totalSeconds <= 0) {
+        clearInterval(countdown);
+        isTimerRunning = false;
+        alert("Zeit ist um!");
+        document.getElementById('timer').innerText = '00:00';
       }
     }, 1000);
-  </script>
+  };
+
+  function updateTimerDisplay(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    document.getElementById('timer').innerText =
+      (minutes < 10 ? '0' : '') + minutes + ':' +
+      (remainingSeconds < 10 ? '0' : '') + remainingSeconds;
+  }
+
+  // Kalender mit Monat, Jahr und Kalenderwoche
+  function renderCalendar() {
+    var calendar = document.getElementById('calendarDisplay');
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var today = now.getDate();
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+    var daysInMonth = lastDay.getDate();
+    var startWeekday = firstDay.getDay();
+    var weekHeader = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+    var weeks = [], week = [];
+
+    // Monatstitel und Kalenderwoche berechnen
+    var monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                      'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    var calendarTitle = monthNames[month] + ' ' + year;
+
+    function getISOWeek(date) {
+      var tempDate = new Date(date.valueOf());
+      var day = tempDate.getDay() || 7;
+      tempDate.setHours(0,0,0,0);
+      tempDate.setDate(tempDate.getDate() + 4 - day);
+      var yearStart = new Date(tempDate.getFullYear(),0,1);
+      return Math.ceil((((tempDate - yearStart) / 86400000) + 1)/7);
+    }
+    var currentWeek = getISOWeek(now);
+
+    // Leerfelder für Montag als Wochenstart (Sonntag = 0 => 7)
+    var startDay = startWeekday === 0 ? 7 : startWeekday;
+
+    // Kalender-Wochenzeilen zusammenbauen
+    var dayCounter = 1 - (startDay - 1);
+    while(dayCounter <= daysInMonth) {
+      week = [];
+      for(var i=0; i<7; i++) {
+        if(dayCounter > 0 && dayCounter <= daysInMonth) {
+          week.push(dayCounter);
+        } else {
+          week.push('');
+        }
+        dayCounter++;
+      }
+      weeks.push(week);
+    }
+
+    // Kalender als Text zusammenstellen
+    var calText = calendarTitle + "  KW " + currentWeek + "\n";
+    calText += weekHeader.join(" ") + "\n";
+
+    for(var w=0; w<weeks.length; w++) {
+      var weekStr = "";
+      for(var d=0; d<7; d++) {
+        var dayVal = weeks[w][d];
+        if(dayVal === '') {
+          weekStr += "   ";
+        } else {
+          if(dayVal === today) {
+            weekStr += " " + "[\x1b[31m" + dayVal.toString().padStart(2, ' ') + "\x1b[0m" + "]";
+          }
+          else {
+            weekStr += " " + dayVal.toString().padStart(2, ' ') + " ";
+          }
+        }
+      }
+      calText += weekStr + "\n";
+    }
+
+    // Da markierte Tage im Text nicht funktionieren, ersetzen wir die aktuelle Tageszahl mit <mark>
+    var calHtml = calendarTitle + "  KW " + currentWeek + "<br>";
+    calHtml += weekHeader.join(" ") + "<br>";
+    for(var w=0; w<weeks.length; w++) {
+      var weekHtml = "";
+      for(var d=0; d<7; d++) {
+        var dayVal = weeks[w][d];
+        if(dayVal === '') {
+          weekHtml += "&nbsp;&nbsp;&nbsp;";
+        } else {
+          if(dayVal === today) {
+            weekHtml += "&nbsp;<mark>" + dayVal.toString().padStart(2, ' ') + "</mark>";
+          } else {
+            weekHtml += "&nbsp;" + dayVal.toString().padStart(2, ' ');
+          }
+        }
+      }
+      calHtml += weekHtml + "<br>";
+    }
+    calendar.innerHTML = calHtml;
+  }
+
+  renderCalendar();
+
+  // Notizen laden/speichern
+  var notesTextarea = document.getElementById('notes');
+  var saveNotesBtn = document.getElementById('saveNotesBtn');
+  var notesKey = "ipad2_notes";
+
+  function loadNotes() {
+    var savedNotes = localStorage.getItem(notesKey);
+    if(savedNotes) {
+      notesTextarea.value = savedNotes;
+    }
+  }
+
+  function saveNotes() {
+    localStorage.setItem(notesKey, notesTextarea.value);
+    alert("Notizen gespeichert!");
+  }
+
+  saveNotesBtn.addEventListener('click', saveNotes);
+  loadNotes();
+
+  // Rechner
+  var calcDisplay = document.getElementById('calcDisplay');
+  var calcInput = "";
+
+  window.calcPress = function(val) {
+    calcInput += val;
+    calcDisplay.value = calcInput;
+  };
+
+  window.calcClear = function() {
+    calcInput = "";
+    calcDisplay.value = "";
+  };
+
+  window.calcCalculate = function() {
+    try {
+      // Eval mit Sicherheitseinschränkungen
+      var safeInput = calcInput.replace(/[^0-9+\-*/().]/g, '');
+      var result = eval(safeInput);
+      calcDisplay.value = result;
+      calcInput = result.toString();
+    } catch(e) {
+      calcDisplay.value = "Fehler";
+      calcInput = "";
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
