@@ -3,52 +3,39 @@
 <head>
 <meta charset="UTF-8" />
 <title>Dashboard iPad 2</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <style>
   html, body {
     margin: 0; padding: 0; height: 100%; width: 100%;
-    /* Wichtig: Kein overflow:hidden, damit Höhe funktioniert */
+    overflow: hidden;
     font-family: sans-serif;
     text-align: center;
     background: url('Werkstatt.jpg') no-repeat center center fixed;
     background-size: cover;
-    display: flex;
-    flex-direction: column;
-  }
-
-  body {
-    /* Höhe nutzen, flex Kinder verteilen */
-    height: 100vh;
   }
 
   #digitalClock {
     font-size: 2.5em;
     font-family: monospace;
     color: red;
-    margin: 10px 0 5px 0;
+    margin: 15px 0 0 0;
     text-shadow: 0 0 10px red;
-    flex-shrink: 0;
   }
 
   canvas {
     background: white;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    width: 240px;
-    height: 240px;
-    margin: 5px auto 15px auto;
-    flex-shrink: 0;
-  }
-
-  .timer-btns {
-    margin-bottom: 5px;
-    flex-shrink: 0;
+    width: 280px;
+    height: 280px;
+    display: block;
+    margin: 15px auto 20px auto;
   }
 
   .timer-btns button {
-    margin: 2px 5px;
+    margin: 5px 3px;
     padding: 8px 12px;
     font-size: 14px;
     background-color: #4CAF50;
@@ -59,92 +46,110 @@
   }
 
   #timer {
-    font-size: 1.8em;
-    margin: 0 0 10px 0;
+    font-size: 1.6em;
+    margin-top: 8px;
     color: red;
     font-family: monospace;
-    flex-shrink: 0;
   }
 
+  /* Kalender */
   .calendar {
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto 15px auto;
-    background: rgba(255,255,255,0.85);
-    padding: 10px 8px;
-    border-radius: 10px;
-    font-family: monospace;
-    white-space: pre-wrap;
-    line-height: 1.4;
+    width: 320px;
+    margin: 15px auto 25px auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 10px;
     box-sizing: border-box;
+    font-family: monospace;
+    color: #222;
     user-select: none;
-
-    /* Wichtige Anpassung: Höhe begrenzen, damit Kalender nicht alles zupflastert */
-    max-height: 120px;
-    overflow: hidden;
-    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
   }
 
-  mark {
+  .calendar table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 1em;
+  }
+
+  .calendar th, .calendar td {
+    border: 1px solid #ccc;
+    padding: 6px 0;
+    text-align: center;
+    vertical-align: middle;
+    width: 14.28%;
+  }
+
+  .calendar th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #444;
+    user-select: none;
+  }
+
+  .calendar td.today {
     background-color: #ff4444;
     color: white;
     font-weight: bold;
-    padding: 0 2px;
-    border-radius: 3px;
+    border-radius: 50%;
+    user-select: none;
   }
 
+  /* Container Notizen & Rechner */
   #notesCalculatorContainer {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    flex-wrap: nowrap; /* Keine Umbrüche, damit nebeneinander */
-    margin: 0 auto 10px auto;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 10px auto 35px auto;
     max-width: 700px;
-    flex-shrink: 1;
-    flex-grow: 1;
-    min-height: 150px;
-    overflow: hidden;
   }
 
   #notesContainer, #calculator {
     flex: 1 1 45%;
     min-width: 140px;
-    background: rgba(40, 40, 40, 0.85);
-    padding: 6px 8px;
-    border-radius: 8px;
+    background: rgba(40, 40, 40, 0.5);
+    padding: 5px 6px;
+    border-radius: 6px;
     box-sizing: border-box;
-    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    box-shadow: 0 0 6px rgba(0,0,0,0.15);
     font-family: monospace;
     text-align: left;
-    color: #f1f1f1;
-    font-size: 0.85em;
+    color: #eee;
+    font-size: 0.8em;
     overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  #notesContainer:hover, #calculator:hover {
+    background: rgba(40, 40, 40, 0.7);
   }
 
   #notesContainer h2 {
     margin-top: 0;
     color: #f1f1f1;
-    font-size: 1em;
+    font-size: 1.1em;
   }
 
   #notes {
     width: 100%;
-    height: 80px;
+    height: 70px;
     font-family: monospace;
-    font-size: 12px;
-    padding: 5px;
+    font-size: 11px;
+    padding: 6px;
     border-radius: 6px;
     border: 1px solid #555;
     resize: vertical;
     box-sizing: border-box;
-    background-color: #1e1e1e;
+    background-color: #222;
     color: #f1f1f1;
   }
 
   #saveNotesBtn {
     margin-top: 8px;
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
     background-color: #2196F3;
     color: white;
     border: none;
@@ -158,31 +163,26 @@
 
   #calcDisplay {
     width: 100%;
-    height: 30px;
-    font-size: 1em;
+    height: 28px;
+    font-size: 0.9em;
     text-align: right;
-    padding: 4px 6px;
-    margin-bottom: 8px;
+    padding: 4px 8px;
+    margin-bottom: 10px;
     border-radius: 6px;
     border: 1px solid #555;
     box-sizing: border-box;
     font-family: monospace;
-    background-color: #1e1e1e;
+    background-color: #222;
     color: #f1f1f1;
   }
 
-  #calcButtons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
   #calcButtons button {
-    flex: 1 1 21%;
-    font-size: 1em;
-    padding: 6px 0;
+    width: 21%;
+    margin: 1%;
+    font-size: 0.9em;
+    padding: 5px 0;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     background-color: #eee;
     transition: background-color 0.2s ease;
@@ -202,7 +202,7 @@
   }
 
   #calcButtons button.equals {
-    flex: 1 1 92%;
+    width: 92%;
     background-color: #2196F3;
     color: white;
   }
@@ -215,7 +215,7 @@
 <body>
 
 <div id="digitalClock">--:--:--</div>
-<canvas id="clockCanvas" width="240" height="240"></canvas>
+<canvas id="clockCanvas" width="280" height="280"></canvas>
 
 <div class="timer-btns">
   <button onclick="startTimer(1)">1 Minute</button>
@@ -265,7 +265,7 @@
 </div>
 
 <script>
-// Uhr, Timer, Kalender, Notizen, Rechner Script bleibt unverändert
+// UHR, TIMER, KALENDER, NOTIZEN, RECHNER
 (function() {
   var canvas = document.getElementById('clockCanvas');
   var ctx = canvas.getContext('2d');
@@ -313,63 +313,64 @@
     var second = now.getSeconds();
 
     drawHand(((hour + minute / 60) * Math.PI / 6) - Math.PI/2, radius * 0.5, 8);
-    drawHand((minute * Math.PI / 30) - Math.PI/2, radius * 0.7, 6);
+    drawHand((minute * Math.PI / 30) - Math.PI/2, radius * 0.75, 6);
     drawHand((second * Math.PI / 30) - Math.PI/2, radius * 0.85, 2, 'red');
-
-    document.getElementById('digitalClock').textContent =
-      (now.getHours()<10?'0':'') + now.getHours() + ':' +
-      (minute<10?'0':'') + minute + ':' +
-      (second<10?'0':'') + second;
   }
 
-  function drawHand(angle, length, width, color) {
+  function drawHand(pos, length, width, color) {
     ctx.beginPath();
     ctx.lineWidth = width;
     ctx.lineCap = "round";
     ctx.strokeStyle = color || '#000';
     ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX + length * Math.cos(angle), centerY + length * Math.sin(angle));
+    ctx.lineTo(centerX + Math.cos(pos) * length, centerY + Math.sin(pos) * length);
     ctx.stroke();
   }
 
-  setInterval(drawClock, 1000);
-  drawClock();
-
-  var countdown;
-  var isTimerRunning = false;
-
-  window.startTimer = function(minutes) {
-    if (isTimerRunning) {
-      clearInterval(countdown);
-      isTimerRunning = false;
-      document.getElementById('timer').innerText = '00:00';
-    }
-
-    var totalSeconds = minutes * 60;
-    isTimerRunning = true;
-    updateTimerDisplay(totalSeconds);
-
-    countdown = setInterval(function () {
-      totalSeconds--;
-      updateTimerDisplay(totalSeconds);
-
-      if (totalSeconds <= 0) {
-        clearInterval(countdown);
-        isTimerRunning = false;
-        alert("Zeit ist um!");
-        document.getElementById('timer').innerText = '00:00';
-      }
-    }, 1000);
-  };
-
-  function updateTimerDisplay(seconds) {
-    var min = Math.floor(seconds / 60);
-    var sec = seconds % 60;
-    document.getElementById('timer').innerText =
-      (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
+  function updateDigitalClock() {
+    var now = new Date();
+    var h = now.getHours().toString().padStart(2,'0');
+    var m = now.getMinutes().toString().padStart(2,'0');
+    var s = now.getSeconds().toString().padStart(2,'0');
+    document.getElementById('digitalClock').textContent = h + ':' + m + ':' + s;
   }
 
-  // Kalender generieren
+  function clockTick() {
+    drawClock();
+    updateDigitalClock();
+  }
+
+  setInterval(clockTick, 1000);
+  clockTick();
+
+  // Timer
+  var timerInterval;
+  var timerSecondsRemaining;
+
+  function startTimer(minutes) {
+    if(timerInterval) clearInterval(timerInterval);
+    timerSecondsRemaining = minutes * 60;
+    updateTimerDisplay();
+    timerInterval = setInterval(function() {
+      timerSecondsRemaining--;
+      if(timerSecondsRemaining < 0){
+        clearInterval(timerInterval);
+        document.getElementById('timer').textContent = "Zeit abgelaufen!";
+        return;
+      }
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    var min = Math.floor(timerSecondsRemaining / 60).toString().padStart(2,'0');
+    var sec = (timerSecondsRemaining % 60).toString().padStart(2,'0');
+    document.getElementById('timer').textContent = min + ':' + sec;
+  }
+
+  window.startTimer = startTimer; // global für Buttons
+
+  // Kalender
   function generateCalendar() {
     var calendar = document.getElementById('calendarDisplay');
     var now = new Date();
@@ -380,64 +381,88 @@
     var lastDate = new Date(year, month + 1, 0).getDate();
 
     var days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-    var calendarText = ' ' + year + ' ' + (month + 1) + '\n';
 
-    // Header Tage
+    var html = '<table><thead><tr>';
+    html += '<th colspan="7" style="padding-bottom:10px; font-size:1.2em; color:#333;">' + year + ' - ' + (month + 1) + '</th>';
+    html += '</tr><tr>';
+
     for (var i = 0; i < days.length; i++) {
-      calendarText += days[i] + ' ';
+      html += '<th>' + days[i] + '</th>';
     }
-    calendarText += '\n';
+    html += '</tr></thead><tbody><tr>';
 
-    // Leerfelder vor erstem Tag
     for (var i = 0; i < firstDay; i++) {
-      calendarText += '   ';
+      html += '<td></td>';
     }
 
+    var dayCounter = firstDay;
     for (var d = 1; d <= lastDate; d++) {
-      if (d === now.getDate()) {
-        calendarText += '[*' + (d < 10 ? ' ' + d : d) + '*]';
-      } else {
-        calendarText += (d < 10 ? ' ' + d : d) + ' ';
+      var isToday = (d === now.getDate());
+      html += '<td' + (isToday ? ' class="today"' : '') + '>' + d + '</td>';
+      dayCounter++;
+      if (dayCounter % 7 === 0 && d !== lastDate) {
+        html += '</tr><tr>';
       }
     }
 
-    calendar.textContent = calendarText;
+    while (dayCounter % 7 !== 0) {
+      html += '<td></td>';
+      dayCounter++;
+    }
+
+    html += '</tr></tbody></table>';
+
+    calendar.innerHTML = html;
   }
 
   generateCalendar();
 
   // Notizen speichern
-  document.getElementById('saveNotesBtn').addEventListener('click', function() {
-    localStorage.setItem('userNotes', document.getElementById('notes').value);
+  var notesTextarea = document.getElementById('notes');
+  var saveNotesBtn = document.getElementById('saveNotesBtn');
+
+  saveNotesBtn.addEventListener('click', function(){
+    localStorage.setItem('ipadNotes', notesTextarea.value);
     alert('Notizen gespeichert!');
   });
 
-  // Notizen laden
-  window.onload = function() {
-    var savedNotes = localStorage.getItem('userNotes');
-    if (savedNotes) {
-      document.getElementById('notes').value = savedNotes;
-    }
-  };
+  // Beim Laden Notizen aus localStorage laden
+  window.addEventListener('load', function(){
+    var saved = localStorage.getItem('ipadNotes');
+    if(saved) notesTextarea.value = saved;
+  });
 
   // Rechner
   var calcDisplay = document.getElementById('calcDisplay');
+  var calcExpression = '';
 
-  window.calcPress = function(value) {
-    calcDisplay.value += value;
+  window.calcPress = function(char) {
+    // nur Zahlen, Punkt und Operatoren erlauben
+    if(/[0-9.+\-*/]/.test(char)) {
+      calcExpression += char;
+      calcDisplay.value = calcExpression;
+    }
   };
 
   window.calcClear = function() {
+    calcExpression = '';
     calcDisplay.value = '';
   };
 
   window.calcCalculate = function() {
     try {
-      // eslint-disable-next-line no-eval
-      var result = eval(calcDisplay.value);
-      calcDisplay.value = result;
-    } catch (e) {
-      calcDisplay.value = 'Error';
+      // Sicherheit: nur erlaubte Zeichen auswerten
+      if(/^[0-9.+\-*/() ]+$/.test(calcExpression)) {
+        var result = eval(calcExpression);
+        calcDisplay.value = result;
+        calcExpression = result.toString();
+      } else {
+        calcDisplay.value = 'Fehler';
+        calcExpression = '';
+      }
+    } catch {
+      calcDisplay.value = 'Fehler';
+      calcExpression = '';
     }
   };
 })();
