@@ -2,11 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<title>Dashboard iPad 2 kompatibel</title>
+<title>Dashboard iPad 2</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <style>
   html, body {
-    margin: 0; padding: 0; height: 100%; width: 100%;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
     overflow: hidden;
     font-family: sans-serif;
     text-align: center;
@@ -15,17 +16,15 @@
     color: #222;
   }
 
-  /* Digitaluhr */
   #digitalClock {
     font-size: 2.5em;
     font-family: monospace;
     color: red;
-    margin: 15px 0 0 0;
+    margin: 15px 0;
     text-shadow: 0 0 10px red;
     user-select: none;
   }
 
-  /* Analog-Uhr */
   canvas {
     background: white;
     border-radius: 50%;
@@ -33,15 +32,14 @@
     width: 280px;
     height: 280px;
     display: block;
-    margin: 15px auto 20px auto;
+    margin: 0 auto 15px;
   }
 
-  /* Timer Buttons */
   .timer-btns button {
-    margin: 5px 3px;
-    padding: 8px 12px;
+    margin: 4px 6px;
+    padding: 6px 12px;
     font-size: 14px;
-    background-color: #4CAF50;
+    background: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -49,33 +47,29 @@
     user-select: none;
   }
 
-  /* Timer Anzeige */
   #timer {
     font-size: 1.6em;
-    margin-top: 8px;
+    margin: 8px 0;
     color: red;
     font-family: monospace;
-    user-select: none;
   }
 
-  /* Kalender */
   .calendar {
     width: 340px;
-    margin: 15px auto 25px auto;
-    background: rgba(255, 255, 255, 0.9);
+    margin: 15px auto;
+    background: rgba(255,255,255,0.9);
     border-radius: 12px;
     padding: 10px 5px 15px 5px;
     box-sizing: border-box;
     font-family: monospace;
-    color: #222;
     user-select: none;
     box-shadow: 0 0 12px rgba(0,0,0,0.15);
   }
 
-  .calendar-header {
+  .calendar .calendar-header {
     font-size: 1.3em;
     font-weight: bold;
-    padding-bottom: 8px;
+    margin-bottom: 8px;
     color: #333;
   }
 
@@ -91,240 +85,259 @@
     padding: 6px 0;
     text-align: center;
     vertical-align: middle;
-    width: 12.5%; /* 8 Spalten: KW + 7 Tage */
+    width: 12.5%; /* 8 Spalten: KW + 7 Tage */
   }
 
   .calendar th {
-    background-color: #f0f0f0;
+    background: #f0f0f0;
     font-weight: bold;
     color: #444;
     user-select: none;
   }
 
-  /* Heutiger Tag rot hinterlegt */
   .calendar td.today {
-    background-color: #ff4444;
+    background: #ff4444;
     color: white;
     font-weight: bold;
     border-radius: 50%;
   }
 
-  /* Platzhalter Taschenrechner und Notizen */
-  #calculator, #notes {
-    background: rgba(255,255,255,0.8);
+  #notes, #calculator {
     width: 320px;
     margin: 10px auto;
+    background: rgba(40,40,40,0.7);
+    color: #eee;
     border-radius: 10px;
     padding: 10px;
     box-sizing: border-box;
-    color: #222;
     font-family: monospace;
     user-select: none;
+  }
+
+  #notes h2, #calculator h2 {
+    margin: 0 0 8px;
+    font-size: 1.1em;
+  }
+
+  #notes textarea {
+    width: 100%;
+    height: 80px;
+    background: #222;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 6px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+
+  #notes button {
+    margin-top: 6px;
+    padding: 5px 12px;
+    font-size: 0.9em;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #calculator input {
+    width: 100%;
+    height: 28px;
+    background: #222;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    margin-bottom: 6px;
+    font-family: monospace;
+    font-size: 1em;
+    text-align: right;
+  }
+
+  #calculator .btn {
+    width: 20%;
+    margin: 2%;
+    padding: 8px 0;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #eee;
+  }
+
+  #calculator .btn.operator {
+    background: #f90;
+    color: white;
+  }
+
+  #calculator .btn.equals {
+    width: 92%;
+    background: #2196F3;
+    color: white;
+  }
+
+  #calculator .btn:hover {
+    background: #ddd;
   }
 </style>
 </head>
 <body>
 
 <div id="digitalClock">--:--:--</div>
-
 <canvas id="clockCanvas" width="280" height="280"></canvas>
 
 <div class="timer-btns">
-  <button onclick="startTimer(1)">1 Minute</button>
-  <button onclick="startTimer(2)">2 Minuten</button>
-  <button onclick="startTimer(5)">5 Minuten</button>
-  <button onclick="startTimer(10)">10 Minuten</button>
-  <button onclick="startTimer(15)">15 Minuten</button>
+  <button onclick="startTimer(1)">1 Min</button>
+  <button onclick="startTimer(2)">2 Min</button>
+  <button onclick="startTimer(5)">5 Min</button>
+  <button onclick="startTimer(10)">10 Min</button>
+  <button onclick="startTimer(15)">15 Min</button>
 </div>
-
 <div id="timer">00:00</div>
 
 <div class="calendar">
-  <div class="calendar-header" id="calendarMonthYear">Monat Jahr</div>
+  <div class="calendar-header" id="calendarMonthYear"></div>
   <div id="calendarDisplay"></div>
 </div>
 
-<!-- Platzhalter für Rechner & Notizen -->
-<div id="calculator">Taschenrechner hier</div>
-<div id="notes">Notizen hier</div>
+<div id="notes">
+  <h2>Notizen</h2>
+  <textarea id="notesArea" placeholder="Hier Notizen..."></textarea><br>
+  <button id="saveNotesBtn">Speichern</button>
+</div>
+
+<div id="calculator">
+  <h2>Rechner</h2>
+  <input type="text" id="calcDisplay" readonly>
+  <div id="calcButtons">
+    <button class="btn" onclick="calcPress('7')">7</button>
+    <button class="btn" onclick="calcPress('8')">8</button>
+    <button class="btn" onclick="calcPress('9')">9</button>
+    <button class="btn operator" onclick="calcPress('/')">÷</button>
+    <button class="btn" onclick="calcPress('4')">4</button>
+    <button class="btn" onclick="calcPress('5')">5</button>
+    <button class="btn" onclick="calcPress('6')">6</button>
+    <button class="btn operator" onclick="calcPress('*')">×</button>
+    <button class="btn" onclick="calcPress('1')">1</button>
+    <button class="btn" onclick="calcPress('2')">2</button>
+    <button class="btn" onclick="calcPress('3')">3</button>
+    <button class="btn operator" onclick="calcPress('-')">−</button>
+    <button class="btn" onclick="calcPress('0')">0</button>
+    <button class="btn" onclick="calcPress('.')">.</button>
+    <button class="btn" onclick="calcClear()">C</button>
+    <button class="btn operator" onclick="calcPress('+')">+</button>
+    <button class="btn equals" onclick="calcCalculate()">=</button>
+  </div>
+</div>
 
 <script>
 (function(){
   var canvas = document.getElementById('clockCanvas');
   var ctx = canvas.getContext('2d');
-  var radius = canvas.height / 2;
-  var centerX = canvas.width / 2;
-  var centerY = canvas.height / 2;
+  var radius = canvas.height/2, cx = canvas.width/2, cy = canvas.height/2;
 
-  // Analog-Uhr zeichnen
-  function drawClock() {
+  function drawClock(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius*0.9, 0, 2*Math.PI);
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = '#333';
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 8, 0, 2*Math.PI);
-    ctx.fillStyle = '#333';
-    ctx.fill();
-
-    drawNumbers();
-    drawHands();
+    ctx.beginPath(); ctx.arc(cx,cy,radius*0.9,0,2*Math.PI); ctx.fillStyle='white'; ctx.fill();
+    ctx.lineWidth=8; ctx.strokeStyle='#333'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,8,0,2*Math.PI); ctx.fillStyle='#333'; ctx.fill();
+    drawNumbers(); drawHands();
   }
 
-  function drawNumbers() {
-    ctx.font = (radius*0.12|0) + "px Arial";
-    ctx.fillStyle = '#000';
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "center";
-
-    for(var num=1; num<=12; num++){
-      var ang = num * Math.PI / 6;
-      var x = centerX + Math.cos(ang - Math.PI/2) * radius*0.75;
-      var y = centerY + Math.sin(ang - Math.PI/2) * radius*0.75;
-      ctx.fillText(num.toString(), x, y);
+  function drawNumbers(){
+    ctx.font = ((radius*0.12)|0) + "px Arial";
+    ctx.fillStyle='#000'; ctx.textBaseline="middle"; ctx.textAlign="center";
+    for(var n=1; n<=12; n++){
+      var ang = n*Math.PI/6;
+      var x = cx + Math.cos(ang - Math.PI/2)*radius*0.75;
+      var y = cy + Math.sin(ang - Math.PI/2)*radius*0.75;
+      ctx.fillText(n.toString(), x, y);
     }
   }
 
-  function drawHands() {
-    var now = new Date();
-    var hour = now.getHours() % 12;
-    var minute = now.getMinutes();
-    var second = now.getSeconds();
-
-    drawHand(((hour + minute/60) * Math.PI/6) - Math.PI/2, radius*0.5, 8);
-    drawHand((minute * Math.PI/30) - Math.PI/2, radius*0.75, 6);
-    drawHand((second * Math.PI/30) - Math.PI/2, radius*0.85, 2, 'red');
+  function drawHands(){
+    var now=new Date(), h=now.getHours()%12, m=now.getMinutes(), s=now.getSeconds();
+    drawHand(((h + m/60)*Math.PI/6)-Math.PI/2, radius*0.5,8);
+    drawHand((m*Math.PI/30)-Math.PI/2, radius*0.75,6);
+    drawHand((s*Math.PI/30)-Math.PI/2, radius*0.85,2,'red');
   }
 
-  function drawHand(pos, length, width, color) {
-    ctx.beginPath();
-    ctx.lineWidth = width;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = color || '#000';
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX + Math.cos(pos) * length, centerY + Math.sin(pos) * length);
-    ctx.stroke();
+  function drawHand(pos,len,wd,col){
+    ctx.beginPath(); ctx.lineWidth=wd; ctx.lineCap="round";
+    ctx.strokeStyle=col||'#000'; ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(pos)*len, cy+Math.sin(pos)*len); ctx.stroke();
   }
 
-  // Digitaluhr ohne padStart
-  function zeroPad(num) {
-    return (num < 10 ? "0" : "") + num;
+  function z(n){ return (n<10?'0':'')+n; }
+  function updateDigital(){ var t=new Date();
+    document.getElementById('digitalClock').textContent = z(t.getHours()) + ':' + z(t.getMinutes()) + ':' + z(t.getSeconds());
   }
 
-  function updateDigitalClock() {
-    var now = new Date();
-    var h = zeroPad(now.getHours());
-    var m = zeroPad(now.getMinutes());
-    var s = zeroPad(now.getSeconds());
-    document.getElementById('digitalClock').textContent = h + ':' + m + ':' + s;
-  }
+  function tick(){ drawClock(); updateDigital(); }
+  setInterval(tick,1000); tick();
 
-  function clockTick() {
-    drawClock();
-    updateDigitalClock();
-  }
-
-  setInterval(clockTick, 1000);
-  clockTick();
-
-  // Timer
-  var timerInterval;
-  var timerSecondsRemaining;
-
-  window.startTimer = function(minutes){
-    if(timerInterval) clearInterval(timerInterval);
-    timerSecondsRemaining = minutes * 60;
-    updateTimerDisplay();
-    timerInterval = setInterval(function(){
-      timerSecondsRemaining--;
-      if(timerSecondsRemaining < 0){
-        clearInterval(timerInterval);
-        document.getElementById('timer').textContent = "Zeit abgelaufen!";
-        return;
-      }
-      updateTimerDisplay();
-    }, 1000);
+  var ti, rem;
+  window.startTimer = function(min){
+    if(ti) clearInterval(ti);
+    rem=min*60; updateTimer();
+    ti=setInterval(function(){ rem--; if(rem<0){ clearInterval(ti); document.getElementById('timer').textContent="Zeit abgelaufen!"; return;} updateTimer(); },1000);
   };
+  function updateTimer(){ document.getElementById('timer').textContent = z(Math.floor(rem/60)) + ':' + z(rem%60); }
 
-  function updateTimerDisplay(){
-    var min = Math.floor(timerSecondsRemaining / 60);
-    var sec = timerSecondsRemaining % 60;
-    min = zeroPad(min);
-    sec = zeroPad(sec);
-    document.getElementById('timer').textContent = min + ':' + sec;
-  }
-
-  // Kalender mit KW (ISO 8601)
-  function getWeekNumber(d) {
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  function getWeek(d){
+    d = new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-    return weekNo;
+    var ys=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d-ys)/86400000)+1)/7);
   }
 
-  function generateCalendar() {
-    var calendar = document.getElementById('calendarDisplay');
-    var now = new Date();
-    var year = now.getFullYear();
-    var month = now.getMonth();
+  function genCal(){
+    var cd = document.getElementById('calendarDisplay');
+    var now=new Date(), y=now.getFullYear(), mo=now.getMonth();
+    var mNames=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    document.getElementById('calendarMonthYear').textContent = mNames[mo] + ' ' + y;
 
-    // Monatsname deutsch
-    var monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
-                      'August', 'September', 'Oktober', 'November', 'Dezember'];
-    document.getElementById('calendarMonthYear').textContent = monthNames[month] + ' ' + year;
+    var fd=new Date(y,mo,1).getDay(); if(fd==0) fd=7;
+    var ld=new Date(y,mo+1,0).getDate();
+    var days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+    var html='<table><thead><tr><th>KW</th>';
+    for(var i=0;i<7;i++) html+='<th>'+days[i]+'</th>';
+    html+='</tr></thead><tbody>';
 
-    var firstDay = new Date(year, month, 1).getDay();
-    if(firstDay === 0) firstDay = 7; // Sonntag=7 für Montag als Wochenstart
-
-    var lastDate = new Date(year, month + 1, 0).getDate();
-
-    var days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-
-    var html = '<table><thead><tr>';
-    html += '<th>KW</th>'; // KW Spalte
-    for(var i=0; i<days.length; i++){
-      html += '<th>' + days[i] + '</th>';
-    }
-    html += '</tr></thead><tbody>';
-
-    var date = 1;
-    var done = false;
-
-    for(var week=0; week<6; week++){
-      if(done) break;
-      html += '<tr>';
-
-      var weekDate = new Date(year, month, date);
-      var kw = getWeekNumber(weekDate);
-      html += '<td>' + kw + '</td>';
-
-      for(var wd=1; wd<=7; wd++){
-        if((week === 0 && wd < firstDay) || date > lastDate){
-          html += '<td></td>';
-        } else {
-          var isToday = (date === now.getDate());
-          html += '<td' + (isToday ? ' class="today"' : '') + '>' + date + '</td>';
-          date++;
-          if(date > lastDate) done = true;
+    var d=1, done=false;
+    for(var w=0;w<6 && !done; w++){
+      html+='<tr><td>'+ getWeek(new Date(y,mo,d)) + '</td>';
+      for(var wd=1;wd<=7;wd++){
+        if((w==0 && wd<fd) || d>ld){ html+='<td></td>'; }
+        else {
+          html+='<td' + (d==now.getDate()? ' class="today"':'') + '>' + d + '</td>';
+          d++;
+          if(d>ld) done=true;
         }
       }
-      html += '</tr>';
+      html+='</tr>';
     }
-    html += '</tbody></table>';
-
-    calendar.innerHTML = html;
+    html+='</tbody></table>';
+    cd.innerHTML=html;
   }
+  genCal();
 
-  generateCalendar();
+  var notes = document.getElementById('notesArea');
+  document.getElementById('saveNotesBtn').onclick = function(){ localStorage.setItem('notes',notes.value); alert('Gespeichert'); };
+  window.onload = function(){ notes.value = localStorage.getItem('notes') || ''; };
 
-  // Hier kannst du noch Taschenrechner und Notizen einbauen
-
+  var cdsp=document.getElementById('calcDisplay'), expr='';
+  window.calcPress = function(c){ expr += c; cdsp.value = expr; };
+  window.calcClear = function(){ expr = ''; cdsp.value = ''; };
+  window.calcCalculate = function(){
+    try { expr = ''+eval(expr); cdsp.value = expr; }
+    catch(e){ cdsp.value='Fehler'; expr=''; }
+  };
 })();
 </script>
 
